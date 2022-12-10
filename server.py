@@ -55,8 +55,31 @@ while True:
 		else:
 			message = receive_message(notified_socket)
 
-			if message is False:
+			if message is False:    
 				print(f"Conexão encerrada a partir da {clients[notified_socket]['data'].decode('utf-8')}")
+				sockets_list.remove(notified_socket)
+				del clients[notified_socket]
+				continue
+
+			user = clients[notified_socket]
+			print(f"Recebendo mensagem a partir de {user['data'].decode('utf-8')}: {message['data'].decode('utf-8')}")
+
+
+
+			for client_socket in clients:
+				if client_socket != notified_socket:
+					client_socket.send(user['header'] + user['data'] + message['header'] + message['data'])
+
+
+	for notified_socket in exception_sockets:
+		sockets_list.remove(notified_socket)
+		del clients[notified_socket]
+
+
+
+
+
+
 
 
 
